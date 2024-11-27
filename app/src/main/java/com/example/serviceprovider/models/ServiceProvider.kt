@@ -20,39 +20,47 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.foundation.clickable
+import androidx.navigation.NavController
+
+
 
 
 
 @Composable
-fun ServiceProviderGrid() {
+fun ServiceProviderGrid(navController: NavController) {
     val serviceProviders = listOf(
-        ServiceProvider("Plumbing", Icons.Default.Build),          // Example icon for plumbing
-        ServiceProvider("Electricians", Icons.Default.Bolt),       // Example icon for electricians
-        ServiceProvider("Mechanics", Icons.Default.Handyman),      // Example icon for mechanics
-        ServiceProvider("Phone Repairs", Icons.Default.Phone),     // Example icon for phone repairs
-        ServiceProvider("Cleaning", Icons.Default.CleaningServices), // Example icon for cleaning
-        ServiceProvider("Painting", Icons.Default.Brush)           // Example icon for painting
+        ServiceProvider("Plumbing", Icons.Default.Build),
+        ServiceProvider("Electricians", Icons.Default.Bolt),
+        ServiceProvider("Mechanics", Icons.Default.Handyman),
+        ServiceProvider("Phone Repairs", Icons.Default.Phone),
+        ServiceProvider("Cleaning", Icons.Default.CleaningServices),
+        ServiceProvider("Painting", Icons.Default.Brush)
     )
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(serviceProviders) { serviceProvider ->
-            ServiceCard(serviceProvider)
+            ServiceCard(serviceProvider, onClick = { serviceName ->
+                // Navigate to the provider details screen with the service name
+                navController.navigate("provider_details/$serviceName")
+            })
         }
     }
 }
 
+
 @Composable
-fun ServiceCard(serviceProvider: ServiceProvider) {
+fun ServiceCard(serviceProvider: ServiceProvider, onClick: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f),
+            .aspectRatio(1f)
+            .clickable { onClick(serviceProvider.name) }, // Navigate on click
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
@@ -65,7 +73,7 @@ fun ServiceCard(serviceProvider: ServiceProvider) {
                 imageVector = serviceProvider.icon,
                 contentDescription = serviceProvider.name,
                 modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.primary // Optional, for color customization
+                tint = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -75,6 +83,9 @@ fun ServiceCard(serviceProvider: ServiceProvider) {
         }
     }
 }
+
+
+
 
 data class ServiceProvider(
     val name: String,

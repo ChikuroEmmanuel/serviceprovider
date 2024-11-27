@@ -12,7 +12,8 @@ import com.example.serviceprovider.screens.SettingsScreen
 import com.example.serviceprovider.screens.LoginScreen
 import com.example.serviceprovider.screens.RegisterScreen
 import androidx.navigation.navDeepLink
-
+import com.example.serviceprovider.screens.ProviderDetailsScreen
+import com.example.serviceprovider.screens.RegisterProviderScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -47,12 +48,22 @@ fun AppNavHost(navController: NavHostController) {
 
         // Home screen destination
         composable("home") {
-            HomeScreen()
+            HomeScreen(navController)
+        }
+        composable("provider_details/{serviceName}") { backStackEntry ->
+            val serviceName = backStackEntry.arguments?.getString("serviceName") ?: ""
+
+            // Fetch the providers for the selected service name from Firebase
+            ProviderDetailsScreen(serviceName = serviceName)
+        }
+
+        composable("Provider") {
+            RegisterProviderScreen(navController) // The screen you want to navigate to
         }
 
         // Other destinations
         composable("message") { MessageScreen() }
-        composable("profile") { ProfileScreen() }
+        composable("profile") { ProfileScreen(navController) }
         composable("settings") { SettingsScreen() }
     }
 }

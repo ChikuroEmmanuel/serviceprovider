@@ -12,20 +12,35 @@ import androidx.compose.ui.graphics.Color
 import com.example.serviceprovider.models.ServiceProviderGrid
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+
+
 
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
+    val serviceProviders = remember { mutableStateOf<List<String>>(emptyList()) }
+
+    // Fetch providers based on selected service
+    fun fetchProviders(serviceName: String) {
+        fetchServiceProviders(serviceName) { providers ->
+            serviceProviders.value = providers
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
-            .padding(16.dp), // Add padding for spacing
-        contentAlignment = Alignment.TopCenter // Align content to the top
+            .padding(16.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         // Service Provider Grid
-        ServiceProviderGrid()
+        ServiceProviderGrid(navController)
     }
 }
 
